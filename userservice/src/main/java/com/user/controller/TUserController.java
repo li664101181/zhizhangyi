@@ -1,17 +1,20 @@
 package com.user.controller;
 
 
+import com.user.config.Limit;
 import com.user.entity.TUser;
 import com.user.service.TUserService;
 import com.user.service.impl.TUserServiceImpl;
 import com.user.utils.RespBean;
 import com.user.utils.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -21,6 +24,8 @@ import java.util.List;
  * @author 李昶
  * @since 2022-06-05
  */
+
+@Slf4j
 @RestController
 @RequestMapping("/t-user")
 public class TUserController {
@@ -63,6 +68,7 @@ public class TUserController {
         }
         return respBean;
     }
+
     @PostMapping(value = "/getUsersByTime")
     public RespBean findUserBytime(@RequestBody List<String> time) throws ParseException {
         String starttime=time.get(0);
@@ -72,8 +78,15 @@ public class TUserController {
         respBean.setStatus(200);
         respBean.setObj(userList);
         return respBean;
-        //
+        //@Limit(key = "limit2", permitsPerSecond = 1, timeout = 500, timeunit = TimeUnit.MILLISECONDS,msg = "当前排队人数较多，请稍后再试！")
+
     }
 
+    @GetMapping("/test1")
+    @Limit(key = "limit1", permitsPerSecond = 1, timeout = 500, timeunit = TimeUnit.MILLISECONDS,msg = "当前排队人数较多，请稍后再试！")
+    public String limit1() {
+        log.info("令牌桶limit1获取令牌成功");
+        return "ok";
+    }
 
 }

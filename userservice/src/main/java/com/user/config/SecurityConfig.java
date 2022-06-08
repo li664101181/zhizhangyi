@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    //要有一个configure方法吧hrService整进来
+    //configure方法
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
         auth.userDetailsService(customUserService);
@@ -47,14 +47,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/user/vuefindByPage","/use/getByBlogId",
-                           "/type/getAllType","/tag/getAllTag","/use/getByTitle",
-                           "/comment/comments/{blogId}","/comment/comments",
-                            "/use/countBlog","/comment/getCommentByPage",
-                            "/links/getAllLink","/use/vuefindHotBlog").permitAll()
-//                .antMatchers("/blog/getByBlogId").permitAll()
-                .anyRequest().authenticated()
+        http.authorizeRequests()        // 指定的接口直接放行
+                .antMatchers("/t-user/change","/t-user/getUsersByTime","/t-user/test2").permitAll()
+                 // 其他的接口都需要认证后才能请求
+                .anyRequest().authenticated()//任何请求,登录后可以访问
                 .and()
                 .formLogin()
                 .usernameParameter("username")
